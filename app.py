@@ -1,6 +1,7 @@
 import streamlit as st
-import json
+import streamlit_webrtc as webrtc
 from datetime import datetime
+import json
 
 # Función para cargar el historial
 def load_history(activity_name):
@@ -23,6 +24,15 @@ def update_count(activity_name, history, count_to_add):
     else:
         history[today] = count_to_add
     return history
+
+# Función para mostrar la cámara
+def display_camera():
+    webrtc_streamer = webrtc.WebRtcMode.SENDRECV
+    ctx = webrtc.webrtc_streamer(
+        key="camera-stream",
+        mode=webrtc_streamer,
+        video_frame_callback=None
+    )
 
 # Página de selección de actividad
 def activity_selection():
@@ -53,6 +63,10 @@ def activity_selection():
 def main():
     st.title("Aplicación de Actividad Física")
     
+    # Mostrar cámara cuando el usuario lo solicite
+    if st.button("Mostrar cámara frontal"):
+        display_camera()
+
     # Mostrar pantalla de selección de actividad
     activity_selection()
 
