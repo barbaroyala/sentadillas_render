@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: actividad-fisica-streamlit
+    repo: https://github.com/<usuario>/<mi-repo>.git
+    branch: main
+    runtime: docker
+    envVars:
+      - key: PORT
+        value: 8000
