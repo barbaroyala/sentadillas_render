@@ -1,30 +1,6 @@
 import streamlit as st
 import streamlit.components.v1 as components
-from datetime import datetime
-import json
-from motion_detector import start_motion_detector  # Importar la función del nuevo archivo
-
-# Función para cargar el historial
-def load_history(activity_name):
-    try:
-        with open(f"{activity_name}_history.json", "r") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return {}
-
-# Función para guardar el historial
-def save_history(activity_name, history):
-    with open(f"{activity_name}_history.json", "w") as f:
-        json.dump(history, f)
-
-# Función para actualizar el contador
-def update_count(activity_name, history, count_to_add):
-    today = datetime.today().strftime('%Y-%m-%d')
-    if today in history:
-        history[today] += count_to_add
-    else:
-        history[today] = count_to_add
-    return history
+from motion_detector import start_motion_detector  # Importar el detector de movimiento
 
 # Función para mostrar la cámara
 def display_camera():
@@ -36,6 +12,7 @@ def display_camera():
             <video id="video" width="100%" height="auto" autoplay></video>
             <script>
                 const video = document.getElementById("video");
+                // Solicitar acceso a la cámara frontal del dispositivo
                 navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
                     .then(function(stream) {
                         video.srcObject = stream;
@@ -50,35 +27,41 @@ def display_camera():
     # Mostrar el HTML/JS en la interfaz de Streamlit
     components.html(html_code, height=600)
 
+# Función para iniciar el detector de movimiento
+def start_detector():
+    start_motion_detector()  # Llamar al detector de movimiento
+
 # Página de selección de actividad
 def activity_selection():
     activities = ['Sentadillas', 'Dominadas', 'Flexiones', 'Burpees', 'Abdominales']
     activity_name = st.selectbox("Selecciona una actividad", activities)
 
     # Cargar historial para la actividad seleccionada
-    history = load_history(activity_name)
-    
+    # history = load_history(activity_name)  # Este código lo puedes usar para gestionar historial
+    history = {}
+
     st.write(f"Repeticiones hoy: {history.get(datetime.today().strftime('%Y-%m-%d'), 0)}")
 
     # Botones de acción
-    if st.button("Iniciar Detector"):
-        start_motion_detector()  # Llamar a la función importada
-    
+    if st.button("Iniciar Detección"):
+        start_detector()  # Iniciar el detector de movimientos
+
     if st.button("Ver Historial"):
         st.write("Historial de repeticiones:")
-        for date, count in history.items():
-            st.write(f"{date}: {count} repeticiones")
+        # Aquí también puedes mostrar el historial cargado, por ejemplo:
+        # for date, count in history.items():
+        #     st.write(f"{date}: {count} repeticiones")
     
     # Botón para aumentar el contador
     if st.button("Agregar una repetición"):
-        history = update_count(activity_name, history, 1)
-        save_history(activity_name, history)
-        st.write(f"Repeticiones hoy: {history[datetime.today().strftime('%Y-%m-%d')]}")
+        # Agregar una repetición al contador
+        history[datetime.today().strftime('%Y-%m-%d')] = 1
+        st.write(f"Repeticiones hoy: 1")  # Actualiza el contador con la lógica que desees
 
-# Interfaz principal
+# Función principal
 def main():
     st.title("Aplicación de Actividad Física")
-    
+
     # Mostrar cámara cuando el usuario lo solicite
     if st.button("Mostrar cámara frontal"):
         display_camera()
@@ -88,4 +71,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
