@@ -1,5 +1,5 @@
 import streamlit as st
-import streamlit_webrtc as webrtc
+import streamlit.components.v1 as components
 from datetime import datetime
 import json
 
@@ -27,12 +27,27 @@ def update_count(activity_name, history, count_to_add):
 
 # Función para mostrar la cámara
 def display_camera():
-    webrtc_streamer = webrtc.WebRtcMode.SENDRECV
-    ctx = webrtc.webrtc_streamer(
-        key="camera-stream",
-        mode=webrtc_streamer,
-        video_frame_callback=None
-    )
+    # Código HTML y JavaScript para acceder a la cámara
+    html_code = """
+    <html>
+        <body>
+            <h2>Tu Cámara Frontal</h2>
+            <video id="video" width="100%" height="auto" autoplay></video>
+            <script>
+                const video = document.getElementById("video");
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+                    .then(function(stream) {
+                        video.srcObject = stream;
+                    })
+                    .catch(function(err) {
+                        alert("Error al acceder a la cámara: " + err.message);
+                    });
+            </script>
+        </body>
+    </html>
+    """
+    # Mostrar el HTML/JS en la interfaz de Streamlit
+    components.html(html_code, height=600)
 
 # Página de selección de actividad
 def activity_selection():
