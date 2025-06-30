@@ -3,3 +3,4 @@ pandas
 python-dateutil
 numpy
 streamlit-webrtc
+opencv-python-headless

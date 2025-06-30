@@ -2,6 +2,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from datetime import datetime
 import json
+from motion_detector import start_motion_detector  # Importar la función del nuevo archivo
 
 # Función para cargar el historial
 def load_history(activity_name):
@@ -61,7 +62,7 @@ def activity_selection():
 
     # Botones de acción
     if st.button("Iniciar Detector"):
-        st.write("Aquí iría la lógica para iniciar un detector de movimientos")
+        start_motion_detector()  # Llamar a la función importada
     
     if st.button("Ver Historial"):
         st.write("Historial de repeticiones:")
@@ -87,3 +88,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
