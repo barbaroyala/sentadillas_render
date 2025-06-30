@@ -1,6 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 from motion_detector import start_motion_detector  # Importar el detector de movimiento
+from datetime import datetime
 
 # Función para mostrar la cámara
 def display_camera():
